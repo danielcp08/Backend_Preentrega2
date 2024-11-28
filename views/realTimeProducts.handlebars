@@ -1,0 +1,64 @@
+<form id="productForm">
+    <input type="text" name="title" placeholder="Título" required>
+    <input type="text" name="description" placeholder="Descripción" required>
+    <input type="number" name="price" placeholder="Precio" required>
+    <button type="submit">Agregar Producto</button>
+</form>
+
+<table id="productTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="productList">
+        {{#each products}}
+        <tr>
+            <td>{{this.id}}</td>
+            <td>{{this.title}}</td>
+            <td>{{this.description}}</td>
+            <td>${{this.price}}</td>
+            <td>
+                <button onclick="deleteProduct({{this.id}})">Eliminar</button>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const productForm = document.getElementById('productForm');
+    const productList = document.getElementById('productList');
+
+    socket.on('productList', (products) => {
+        productList.innerHTML = products.map(p => `
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.title}</td>
+                <td>${p.description}</td>
+                <td>$${p.price}</td>
+                <td>
+                    <button onclick="deleteProduct(${p.id})">Eliminar</button>
+                </td>
+            </tr>
+        `).join('');
+    });
+
+    productForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(productForm);
+        const productData = Object.fromEntries(formData);
+        socket.emit('addProduct', productData);
+        productForm.reset();
+    });
+
+    function deleteProduct(id) {
+        socket.emit('deleteProduct', id);
+    }
+</script>

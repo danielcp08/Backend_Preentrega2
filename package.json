@@ -1,5 +1,5 @@
 {
-  "name": "preentrega1-cardenas",
+  "name": "preentrega2-cardenas",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.21.1"
+    "express": "^4.21.1",
+    "express-handlebars": "^8.0.1",
+    "socket.io": "^4.8.1"
   }
 }
